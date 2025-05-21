@@ -4,7 +4,8 @@ services:
   frontend:
     build:
       context: ./src/frontend
-    image: ship-sale-frontend
+      dockerfile: ./docker/${ENV}/Dockerfile
+    image: ship-sale-frontend:${ENV}
     restart: unless-stopped
     ports:
       - "${FRONTEND_EXTERNAL_PORT:-80}:80"
