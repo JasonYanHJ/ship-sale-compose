@@ -1,0 +1,63 @@
+version: "3.8"
+
+services:
+  frontend:
+    build:
+      context: ./src/frontend
+    image: ship-sale-frontend
+    restart: unless-stopped
+    ports:
+      - "${FRONTEND_EXTERNAL_PORT:-80}:80"
+
+  backend-main:
+    build:
+      context: ./src/backend-main
+    image: ship-sale-backend
+    restart: unless-stopped
+    ports:
+      - "${BACKEND_MAIN_EXTERNAL_PORT:-8000}:80"
+    environment:
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_DATABASE=${DB_DATABASE:-db}
+      - DB_USERNAME=root
+      - DB_PASSWORD=${DB_PASSWORD:-password}
+    depends_on:
+      - db
+    networks:
+      - app-network
+
+  db:
+    image: mariadb:10
+    restart: unless-stopped
+    ports:
+      - "${DB_EXTERNAL_PORT:-3306}:3306"
+    environment:
+      - MARIADB_ROOT_PASSWORD=${DB_PASSWORD:-password}
+      - MARIADB_DATABASE=${DB_DATABASE:-db}
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "mysqladmin",
+          "ping",
+          "-h",
+          "${DB_DATABASE:-db}",
+          "-u",
+          "root",
+          "-p${DB_PASSWORD:-password}",
+        ]
+      interval: 5s
+      timeout: 10s
+      retries: 10
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - app-network
+
+volumes:
+  db_data:
+
+networks:
+  app-network:
+    driver: bridge
