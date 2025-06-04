@@ -23,8 +23,40 @@ services:
       - DB_DATABASE=${DB_DATABASE:-db}
       - DB_USERNAME=root
       - DB_PASSWORD=${DB_PASSWORD:-password}
+    volumes:
+      - mail_attachment:${SHARED_MAIL_ATTACHMENT_DIR}
     depends_on:
       - db
+    networks:
+      - app-network
+
+  backend-mail:
+    build:
+      context: ./src/backend-mail
+    image: ship-sale-mail
+    restart: unless-stopped
+    ports:
+      - "${BACKEND_MAIL_EXTERNAL_PORT:-8001}:80"
+    environment:
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_NAME=${DB_DATABASE:-db}
+      - DB_USER=root
+      - DB_PASSWORD=${DB_PASSWORD:-password}
+      - EMAIL_USERNAME=${EMAIL_USERNAME}
+      - EMAIL_PASSWORD=${EMAIL_PASSWORD}
+      - IMAP_SERVER=${IMAP_SERVER}
+      - IMAP_PORT=${IMAP_PORT}
+      - SMTP_SERVER=${SMTP_SERVER}
+      - SMTP_PORT=${SMTP_PORT}
+      - ATTACHMENT_PATH=${SHARED_MAIL_ATTACHMENT_DIR}
+      - MAIL_CHECK_INTERVAL=${MAIL_CHECK_INTERVAL}
+    volumes:
+      - mail_attachment:${SHARED_MAIL_ATTACHMENT_DIR}
+      - ./src/backend-mail/.env:/app/.env
+    depends_on:
+      - db
+      - backend-main
     networks:
       - app-network
 
@@ -58,6 +90,7 @@ services:
 
 volumes:
   db_data:
+  mail_attachment:
 
 networks:
   app-network:
