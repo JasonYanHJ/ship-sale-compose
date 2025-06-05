@@ -25,9 +25,9 @@ check_env = \
 .PHONY: up
 up:
 	$(call check_env)
-	(cd src/frontend && git fetch && git reset --hard)
-	(cd src/backend-main && git fetch && git reset --hard)
-	(cd src/backend-mail && git fetch && git reset --hard)
+	(cd src/frontend && git fetch && git reset --hard origin/main)
+	(cd src/backend-main && git fetch && git reset --hard origin/main)
+	(cd src/backend-mail && git fetch && git reset --hard origin/main)
 	ENV=$(ENV) docker compose -p $(PROJECT_NAME)-$(ENV) up -d --wait $(option)
 	docker compose -p $(PROJECT_NAME)-$(ENV) exec backend-main php artisan migrate
 	@echo "$(PROJECT_NAME)-$(ENV) 已在 $(ENV) 环境中启动"
