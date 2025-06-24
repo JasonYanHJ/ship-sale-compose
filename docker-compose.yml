@@ -51,6 +51,7 @@ services:
       - SMTP_PORT=${SMTP_PORT}
       - ATTACHMENT_PATH=${SHARED_MAIL_ATTACHMENT_DIR}
       - MAIL_CHECK_INTERVAL=${MAIL_CHECK_INTERVAL}
+      - CORS_ORIGINS=${CORS_ORIGINS}
     volumes:
       - mail_attachment:${SHARED_MAIL_ATTACHMENT_DIR}
       - ./src/backend-mail/.env:/app/.env
