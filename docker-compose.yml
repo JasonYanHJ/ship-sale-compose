@@ -53,11 +53,32 @@ services:
       - MAIL_CHECK_INTERVAL=${MAIL_CHECK_INTERVAL}
       - CORS_ORIGINS=${CORS_ORIGINS}
       - LOG_LEVEL=${LOG_LEVEL}
+      - PLAYWRIGHT_BROWSER_URL=ws://playwright-browser:3000
+      - PRODIGY_USERNAME=${PRODIGY_USERNAME}
+      - PRODIGY_PASSWORD=${PRODIGY_PASSWORD}
     volumes:
       - mail_attachment:${SHARED_MAIL_ATTACHMENT_DIR}
     depends_on:
-      - db
-      - backend-main
+      db:
+        condition: service_healthy
+      backend-main:
+        condition: service_started
+      playwright-browser:
+        condition: service_healthy
+    networks:
+      - app-network
+
+  playwright-browser:
+    image: mcr.microsoft.com/playwright:v1.56.0-noble
+    ports:
+      - "3000:3000"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://0.0.0.0:3000"]
+    working_dir: /home/pwuser
+    user: pwuser
+    init: true
+    restart: unless-stopped
+    command: /bin/sh -c "npx -y playwright@1.56.0 run-server --port 3000 --host 0.0.0.0"
     networks:
       - app-network
 
