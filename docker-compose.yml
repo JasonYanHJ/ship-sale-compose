@@ -56,6 +56,8 @@ services:
       - PLAYWRIGHT_BROWSER_URL=ws://playwright-browser:3000
       - PRODIGY_USERNAME=${PRODIGY_USERNAME}
       - PRODIGY_PASSWORD=${PRODIGY_PASSWORD}
+      - VSHIP_USERNAME=${VSHIP_USERNAME}
+      - VSHIP_PASSWORD=${VSHIP_PASSWORD}
     volumes:
       - mail_attachment:${SHARED_MAIL_ATTACHMENT_DIR}
     depends_on:
