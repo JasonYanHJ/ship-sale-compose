@@ -58,6 +58,8 @@ services:
       - PRODIGY_PASSWORD=${PRODIGY_PASSWORD}
       - VSHIP_USERNAME=${VSHIP_USERNAME}
       - VSHIP_PASSWORD=${VSHIP_PASSWORD}
+      - BSM_USERNAME=${BSM_USERNAME}
+      - BSM_PASSWORD=${BSM_PASSWORD}
     volumes:
       - mail_attachment:${SHARED_MAIL_ATTACHMENT_DIR}
     depends_on:
