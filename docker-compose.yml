@@ -38,6 +38,7 @@ services:
     ports:
       - "${BACKEND_MAIL_EXTERNAL_PORT:-8001}:80"
     environment:
+      - LARAVEL_URL=http://backend-main:80
       - DB_HOST=db
       - DB_PORT=3306
       - DB_NAME=${DB_DATABASE:-db}
